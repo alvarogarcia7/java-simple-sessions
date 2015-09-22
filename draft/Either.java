@@ -47,7 +47,6 @@ public class Either<A,B> {
 			System.out.println();
 			System.out.println();
 			System.out.println("Grouped by outcome:");
-			// This is private access here but could be solved with a getter or using the .fold method
 			printRights(contests);
 			printLefts(contests);
 		}
