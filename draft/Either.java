@@ -48,8 +48,16 @@ public class Either<A,B> {
 			System.out.println();
 			System.out.println("Grouped by outcome:");
 			// This is private access here but could be solved with a getter or using the .fold method
-			contests.stream().forEach(x -> x.fold(identity, printingFunction));
+			printRights(contests);
+			printLefts(contests);
+		}
+
+		private void printLefts(List<Either> contests) {
 			contests.stream().forEach(x -> x.fold(printingFunction, identity));
+		}
+
+		private void printRights(List<Either> contests) {
+			contests.stream().forEach(x -> x.fold(identity, printingFunction));
 		}
 
 		private Function_ printingFunction = z -> {
