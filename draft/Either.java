@@ -4,9 +4,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Either<A,B> {
-	interface Function_<T,R> {
-		public R apply(T x);
-	}
 
 	private A left = null;
 	private B right = null;
@@ -24,8 +21,7 @@ public class Either<A,B> {
 		return new Either<>(null, b);
 	}
 
-	/* Here's the important part: */
-	public <R> void fold(Function_<A,R> ifLeft, Function_<B,R> ifRight) {
+	public <R> void fold(Function<A,R> ifLeft, Function<B,R> ifRight) {
 		if (right == null)
 			ifLeft.apply(left);
 		else
@@ -59,12 +55,12 @@ public class Either<A,B> {
 			contests.stream().forEach(x -> x.fold(identity, printingFunction));
 		}
 
-		private Function_ printingFunction = z -> {
+		private Function printingFunction = z -> {
 			System.out.println(z);
 			return null;
 		};
 
-		private Function_ identity = z -> z;
+		private Function identity = z -> z;
 
 		private Integer evenOrFail(Integer n) {
 			if(n % 2 == 0){
