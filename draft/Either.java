@@ -4,8 +4,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Either<A,B> {
-	interface Function_<T> {
-		public void apply(T x);
+	interface Function_<T,R> {
+		public R apply(T x);
 	}
 
 	private A left = null;
@@ -24,7 +24,8 @@ public class Either<A,B> {
 		return new Either<>(null, b);
 	}
 
-	public void fold(Function_<A> ifLeft, Function_<B> ifRight) {
+	/* Here's the important part: */
+	public <R> void fold(Function_<A,R> ifLeft, Function_<B,R> ifRight) {
 		if (right == null)
 			ifLeft.apply(left);
 		else
@@ -41,22 +42,22 @@ public class Either<A,B> {
 			final List<Either> contests = Arrays.asList(0,1,2,3).stream().map(evens).collect(Collectors.toList());
 
 			System.out.println("In order:");
-			print(contests);
+			contests.stream().forEach(x -> x.fold(printingFunction, printingFunction));
 
 			System.out.println();
 			System.out.println();
 			System.out.println("Grouped by outcome:");
 			// This is private access here but could be solved with a getter or using the .fold method
-			List<Either> success = contests.stream().filter(x -> x.right != null).collect(Collectors.toList());
-			List<Either> error = contests.stream().filter(x -> x.left != null).collect(Collectors.toList());
-
-			print(success);
-			print(error);
+			contests.stream().forEach(x -> x.fold(identity, printingFunction));
+			contests.stream().forEach(x -> x.fold(printingFunction, identity));
 		}
 
-		private void print(List<Either> values) {
-			values.stream().forEach(x -> x.fold(System.out::println, System.out::println));
-		}
+		private Function_ printingFunction = z -> {
+			System.out.println(z);
+			return null;
+		};
+
+		private Function_ identity = z -> z;
 
 		private Integer evenOrFail(Integer n) {
 			if(n % 2 == 0){
